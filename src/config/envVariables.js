@@ -11,6 +11,7 @@ const envVariables = {
   JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN,
   MAILTRAP_TOKEN: process.env.MAILTRAP_TOKEN,
   MAILTRAP_SENDER_EMAIL: process.env.MAILTRAP_SENDER_EMAIL,
+  MAILTRAP_TEMPLATE_ID: process.env.MAILTRAP_TEMPLATE_ID,
 };
 
 export default envVariables;
