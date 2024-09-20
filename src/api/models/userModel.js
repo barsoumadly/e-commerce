@@ -3,6 +3,7 @@ import validator from 'validator';
 import bcrypt from 'bcryptjs';
 
 import generateCode from '../helpers/generateCode.js';
+import generateString from '../helpers/generateString.js';
 import hashCode from '../helpers/hashCode.js';
 
 const userSchema = new mongoose.Schema({
@@ -102,6 +103,26 @@ userSchema.methods.generateVerificationCode = function () {
 
 userSchema.methods.comparePasswords = async function (candiatePassword) {
   return await bcrypt.compare(candiatePassword, this.password);
+};
+
+userSchema.methods.generateResetPasswordToken = function () {
+  const token = generateString();
+  this.resetPasswordToken = hashCode(token);
+  this.resetPasswordExpiresIn = Date.now() + 10 * 60 * 1000;
+  return token;
+};
+
+userSchema.methods.checkPasswordList = async function (newPassword) {
+  if (this.passwordList.length === 3) {
+    this.passwordList.shift();
+  }
+
+  for (let password of this.passwordList) {
+    if (await bcrypt.compare(newPassword, password)) {
+      return false;
+    }
+  }
+  return true;
 };
 
 const User = mongoose.model('User', userSchema);
